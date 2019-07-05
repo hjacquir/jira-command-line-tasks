@@ -1,0 +1,8 @@
+project:
+    name: 'Your project name'
+    operator: '='
+    issueSuffix: yourIssueSuffix
+conditions:
+    - ''
+expressions:
+    - 'order by issueKey ASC'

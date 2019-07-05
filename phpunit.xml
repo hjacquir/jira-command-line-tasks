@@ -1,0 +1,23 @@
+<phpunit
+        bootstrap="vendor/autoload.php"
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        forceCoversAnnotation="true"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        verbose="true">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Hj/Unit</directory>
+        </testsuite>
+        <!--<testsuite name="Functional">-->
+            <!--<directory>tests/Hj/Functional</directory>-->
+        <!--</testsuite>-->
+    </testsuites>
+</phpunit>
