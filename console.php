@@ -36,6 +36,7 @@ try {
 $application = new Application();
 $application->add(new AssigneeCommand('jqls/assigneeCommand.yaml', $logger));
 $application->add(new ChangeAssigneeByReporterCommand('jqls/changeAssigneeByReporterCommand.yaml', $logger));
+$application->add(new CommentAndAssignCommand('jqls/commentAndAssignCommand.yaml', $logger));
 $application->add(new CommentCommand('jqls/commentCommand.yaml', $logger));
 $application->add(new GetIssueInfoCommand('jqls/getIssueInfoCommand.yaml', $logger));
 $application->add(new UpdateDueDateCommand('jqls/updateDueDateCommand.yaml', $logger));
