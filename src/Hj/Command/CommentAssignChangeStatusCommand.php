@@ -5,6 +5,7 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Action\AddComment;
 use Hj\Action\ChangeAssignee;
+use Hj\Action\ChangeIssueStatus;
 use Hj\Condition\AlwaysTrue;
 use Hj\Exception\EmptyCommentException;
 use Hj\Exception\EmptyStringException;
@@ -15,6 +16,7 @@ use Hj\Loader\JqlBasedLoader;
 use Hj\Processor\Processor;
 use JiraRestApi\Issue\Comment;
 use JiraRestApi\Issue\IssueService;
+use JiraRestApi\Issue\Transition;
 use JiraRestApi\JiraException;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
@@ -22,7 +24,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CommentAndAssignCommand extends Command
+class CommentAssignChangeStatusCommand extends Command
 {
     /**
      * @var string
@@ -49,7 +51,7 @@ class CommentAndAssignCommand extends Command
     protected function configure()
     {
 
-        $this->setName('helper:comment-assign');
+        $this->setName('helper:comment-assign-change-status');
         $this
             ->addArgument(
                 'id',
@@ -87,9 +89,17 @@ class CommentAndAssignCommand extends Command
             $comment->setBody($commentBody);
             $commentAction = new AddComment($sr, $comment, $this->logger);
             $assigneeAction = new ChangeAssignee($sr, $assigneeName, $this->logger);
+            $changeStatusAction = new ChangeIssueStatus($sr, $this->logger);
+            $transition = new Transition();
+            /**
+             * @todo : sortir à l'extérieur le label de transition
+             */
+            $transition->setTransitionName("In Progress");
+            $changeStatusAction->setTransitionName($transition);
             $collection = new ActionCollection();
             $collection->addAction($commentAction);
             $collection->addAction($assigneeAction);
+            $collection->addAction($changeStatusAction);
 
             $jql = new Jql([$id]);
             $configurator = new JqlConfigurator($jql);
