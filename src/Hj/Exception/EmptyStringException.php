@@ -2,6 +2,8 @@
 
 namespace Hj\Exception;
 
-class EmptyStringException extends \Exception implements HjException{
+use Exception;
+
+class EmptyStringException extends Exception implements HjException{
 
 }

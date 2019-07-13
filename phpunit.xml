@@ -16,8 +16,8 @@
         <testsuite name="Unit">
             <directory>tests/Hj/Unit</directory>
         </testsuite>
-        <!--<testsuite name="Functional">-->
-            <!--<directory>tests/Hj/Functional</directory>-->
-        <!--</testsuite>-->
+        <testsuite name="Functional">
+            <directory>tests/Hj/Functional</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
