@@ -5,6 +5,7 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Action\AddComment;
 use Hj\Condition\AlwaysTrue;
+use Hj\Helper\CommentFormatter;
 use Hj\Jql\Condition;
 use Hj\Jql\Jql;
 use Hj\JqlConfigurator;
@@ -49,9 +50,9 @@ class CommentCommand extends Command
         $this->setName('comment:add');
         $this
             ->addArgument(
-                'comment',
+                'commentFilePath',
                 InputArgument::REQUIRED,
-                'Comment (string)'
+                'The path to the php file that load the comment'
             );
         $this
             ->addArgument(
@@ -68,16 +69,15 @@ class CommentCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $commentFilePath = $input->getArgument('commentFilePath');
         $ids = $input->getArgument('ids');
-        $commentBody = $input->getArgument('comment');
 
         try {
             $sr = new IssueService();
             $condition = new AlwaysTrue();
             $comment = new Comment();
-            $body = <<<COMMENT
-$commentBody
-COMMENT;
+            $commentFormatter = new CommentFormatter($commentFilePath);
+            $body = $commentFormatter->getComment();
             $comment->setBody($body);
             $action = new AddComment($sr, $comment, $this->logger);
             $collection = new ActionCollection();
