@@ -20,12 +20,12 @@ class CommentFormatterTest extends TestCase
      */
     public function testThrowExceptionWhenCommentIncludedFileDoesNotReturnString()
     {
-        new CommentFormatter(__DIR__ . '\emptyFile.php');
+        new CommentFormatter(__DIR__ . '\filesFixture\emptyFile.php');
     }
 
     public function testGetCommentWillReturnString()
     {
-        $formatter = new CommentFormatter(__DIR__ . '\comment.php');
+        $formatter = new CommentFormatter(__DIR__ . '\filesFixture\comment.php');
         $this->assertSame('bla', $formatter->getComment());
     }
 
