@@ -2,8 +2,9 @@
 
 ## Prérequis
 
-- PHP 7
-
+- PHP 7.3
+- Extensions à activer (php.ini) : 
+`extension=curl, extension=fileinfo, extension=gd2, extension=mbstring, extension=openssl`
 ## Description
 Exécuter des tâches Jira en ligne de commande.
 
