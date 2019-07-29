@@ -39,7 +39,7 @@ class ChangeIssueStatus implements Action
     /**
      * @param Transition $transition
      */
-    public function setTransitionName(Transition $transition)
+    public function setTransition(Transition $transition)
     {
         $this->transition = $transition;
     }
@@ -48,7 +48,7 @@ class ChangeIssueStatus implements Action
     {
         try {
             $this->service->transition($issue->key, $this->transition);
-            $this->logger->info("Le ticket " . $issue->key . " est passé à l'état " . $this->transition->id);
+            $this->logger->info("Le ticket " . $issue->key . " est passé à l'état : " . $this->transition->transition['name']);
         } catch (JiraException $e) {
             $this->logger->error("Impossible de faire la transition au ticket [{$e->getMessage()}]");
         }

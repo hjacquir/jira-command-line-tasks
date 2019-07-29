@@ -108,7 +108,7 @@ class CommentAssignChangeStatusCommand extends Command
             $changeStatusAction = new ChangeIssueStatus($sr, $this->logger);
             $transition = new Transition();
             $transition->setTransitionName($newStatus);
-            $changeStatusAction->setTransitionName($transition);
+            $changeStatusAction->setTransition($transition);
             $collection = new ActionCollection();
             $collection->addAction($commentAction);
             $collection->addAction($assigneeAction);
