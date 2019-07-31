@@ -7,11 +7,12 @@ use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Writer\WriterFactory;
 use Hj\Action\ActionCollection;
-use Hj\Action\GetIssueFields;
-use Hj\Collector\NullCollector;
+use Hj\Action\CollectFieldValue;
 use Hj\Condition\AlwaysTrue;
-use Hj\Helper\DateDiffCalculator;
-use Hj\Helper\ResolutionDateFormatter;
+use Hj\Field\Key;
+use Hj\Field\Reporter;
+use Hj\Field\Status;
+use Hj\Field\Summary;
 use Hj\Jql\Condition;
 use Hj\Jql\Jql;
 use Hj\JqlConfigurator;
@@ -79,10 +80,13 @@ class GetIssueInfoCommand extends Command
         try {
             $sr = new IssueService();
             $condition = new AlwaysTrue();
-            $action = new GetIssueFields(
-                new NullCollector(),
-                new ResolutionDateFormatter(),
-                new DateDiffCalculator()
+            $action = new CollectFieldValue(
+                [
+                    new Key(),
+                    new Reporter(),
+                    new Status(),
+                    new Summary(),
+                ]
             );
             $collection = new ActionCollection();
             $collection->addAction($action);
@@ -95,7 +99,7 @@ class GetIssueInfoCommand extends Command
             $jqlLoader = new JqlBasedLoader($sr, $jql, 100, $conditionMoveToNextTicket);
             $processor = new Processor($sr, $condition, $collection, $jqlLoader);
             $processor->process();
-            $issueFields = $action->getIssueFields();
+            $issueFields = $action->getCollectedValues();
 
             $reader = ReaderFactory::create(Type::XLSX);
             $writer = WriterFactory::create(Type::XLSX);

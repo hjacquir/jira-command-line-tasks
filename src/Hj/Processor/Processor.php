@@ -44,7 +44,11 @@ class Processor
         $this->loader = $loader;
     }
 
-    public function stopProcess($issues)
+    /**
+     * @param array $issues
+     * @return bool
+     */
+    public function stopProcess(array $issues) : bool
     {
         // si le nombre de ticket dans ce lot est inférieur
         // au nombre maximum de résultats renvoyés par la requête -> on arrete le traitement

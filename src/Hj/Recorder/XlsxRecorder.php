@@ -2,7 +2,13 @@
 
 namespace Hj\Recorder;
 
+use Box\Spout\Common\Exception\IOException;
+use Box\Spout\Common\Exception\SpoutException;
+use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 use Box\Spout\Reader\XLSX\Reader;
+use Box\Spout\Writer\Exception\InvalidSheetNameException;
+use Box\Spout\Writer\Exception\SheetNotFoundException;
+use Box\Spout\Writer\Exception\WriterNotOpenedException;
 use Box\Spout\Writer\XLSX\Writer;
 
 class XlsxRecorder
@@ -18,10 +24,11 @@ class XlsxRecorder
     private $writer;
 
     /**
-     * @param $reader
-     * @param $writer
+     * XlsxRecorder constructor.
+     * @param Reader $reader
+     * @param Writer $writer
      */
-    function __construct($reader, $writer)
+    public function __construct(Reader $reader, Writer $writer)
     {
         $this->reader = $reader;
         $this->writer = $writer;
@@ -32,15 +39,15 @@ class XlsxRecorder
      * @param string $xlsxTempDataFile
      * @param string $sheetWhereToAddData
      * @param array $rowsBeingAdded
-     *
-     * @throws \Box\Spout\Common\Exception\IOException
-     * @throws \Box\Spout\Common\Exception\SpoutException
-     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
-     * @throws \Exception
-     *
+     * @param string|null $newHeaderRows
+     * @throws IOException
+     * @throws SpoutException
+     * @throws ReaderNotOpenedException
+     * @throws InvalidSheetNameException
+     * @throws SheetNotFoundException
+     * @throws WriterNotOpenedException
      */
-    public function save($xlsxFileWhereToRecordData, $xlsxTempDataFile, $sheetWhereToAddData, array $rowsBeingAdded, $newHeaderRows = null)
+    public function save(string $xlsxFileWhereToRecordData, string $xlsxTempDataFile, string $sheetWhereToAddData, array $rowsBeingAdded, string $newHeaderRows = null)
     {
         $existingFilePath = $xlsxFileWhereToRecordData;
         $newFilePath = $xlsxTempDataFile;

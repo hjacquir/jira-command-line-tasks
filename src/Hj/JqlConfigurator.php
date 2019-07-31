@@ -15,12 +15,20 @@ class JqlConfigurator
      */
     private $jql;
 
+    /**
+     * JqlConfigurator constructor.
+     * @param Jql $jql
+     */
     public function __construct(Jql $jql)
     {
         $this->jql = $jql;
     }
 
-    public function configure($yamlFile)
+    /**
+     * @param string $yamlFile
+     * @return Jql
+     */
+    public function configure(string $yamlFile) : Jql
     {
         $value = Yaml::parseFile($yamlFile);
         $this->jql->setProject(

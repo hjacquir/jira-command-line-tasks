@@ -30,17 +30,21 @@ class JqlBasedLoader implements Loader
      */
     private $conditionMoveNextTicket;
 
-    public function getJql() {
+    /**
+     * @return Jql
+     */
+    public function getJql() : Jql {
         return $this->jql;
     }
 
     /**
+     * JqlBasedLoader constructor.
      * @param IssueService $service
-     * @param string $jql
+     * @param Jql $jql
      * @param int $maxResults
      * @param Condition $conditionMoveNextTicket
      */
-    public function __construct($service, $jql, $maxResults, Condition $conditionMoveNextTicket)
+    public function __construct(IssueService $service, Jql $jql, int $maxResults, Condition $conditionMoveNextTicket)
     {
         $this->service = $service;
         $this->jql = $jql;
@@ -56,6 +60,9 @@ class JqlBasedLoader implements Loader
         return $issueSearchResults->getIssues();
     }
 
+    /**
+     * @param Issue $issue
+     */
     public function moveToNextTicket(Issue $issue)
     {
         $this->conditionMoveNextTicket->setContent('');
@@ -63,7 +70,10 @@ class JqlBasedLoader implements Loader
         $this->jql->addConditions($this->conditionMoveNextTicket);
     }
 
-    public function getMaxResults()
+    /**
+     * @return int
+     */
+    public function getMaxResults() : int
     {
         return $this->maxResults;
     }
