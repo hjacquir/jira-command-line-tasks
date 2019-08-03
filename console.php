@@ -4,19 +4,12 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Hj\Command\AssigneeCommand;
+use Hj\Command\CascadeCommand;
 use Hj\Command\ChangeAssigneeByReporterCommand;
 use Hj\Command\CommentAssignChangeStatusCommand;
 use Hj\Command\CommentCommand;
-use Hj\Command\CountCreatedResolved;
-use Hj\Command\CountFieldWithOptionSelectedCommand;
-use Hj\Command\CountIssueCommand;
-use Hj\Command\GenerateStatsCommand;
-use Hj\Command\GetBeginLastHdCommand;
 use Hj\Command\GetIssueInfoCommand;
-use Hj\Command\JqlGeneratorHelperCommand;
-use Hj\Command\LabelGetterCommand;
 use Hj\Command\UpdateDueDateCommand;
-use Hj\Command\UpdateRootCauseCommand;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Component\Console\Application;
@@ -40,6 +33,7 @@ $application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChange
 $application->add(new CommentCommand('jqls/commentCommand.yaml', $logger));
 $application->add(new GetIssueInfoCommand('jqls/getIssueInfoCommand.yaml', $logger));
 $application->add(new UpdateDueDateCommand('jqls/updateDueDateCommand.yaml', $logger));
+$application->add(new CascadeCommand());
 
 try {
     $application->run();
