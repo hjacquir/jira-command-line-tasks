@@ -1,14 +1,15 @@
 <?php
 
-namespace Hj\Field;
+namespace Hj\FieldValue;
 
 use JiraRestApi\Issue\Issue;
 
-interface Field
+interface FieldValue
 {
     /**
      * @param Issue $issue
      * @return mixed
      */
     public function getValue(Issue $issue);
+
 }

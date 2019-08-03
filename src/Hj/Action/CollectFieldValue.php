@@ -9,7 +9,7 @@ class CollectFieldValue implements Action
     /**
      * @var array
      */
-    private $fields;
+    private $fieldValues;
 
     /**
      * @var array
@@ -18,11 +18,11 @@ class CollectFieldValue implements Action
 
     /**
      * CollectFieldValue constructor.
-     * @param $fields
+     * @param $fieldValues
      */
-    public function __construct(array $fields)
+    public function __construct(array $fieldValues)
     {
-        $this->fields = $fields;
+        $this->fieldValues = $fieldValues;
     }
 
     /**
@@ -32,8 +32,8 @@ class CollectFieldValue implements Action
     {
         $values = [];
 
-        foreach ($this->fields as $field) {
-            array_push($values, $field->getValue($issue));
+        foreach ($this->fieldValues as $fieldValue) {
+            array_push($values, $fieldValue->getValue($issue));
         }
         array_push($this->collectedValues, $values);
     }

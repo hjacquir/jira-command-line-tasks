@@ -1,18 +1,17 @@
 <?php
 
-namespace Hj\Field;
+namespace Hj\FieldValue;
 
 use JiraRestApi\Issue\Issue;
 
-class Reporter implements Field
+class Key implements FieldValue
 {
-
     /**
      * @param Issue $issue
      * @return string
      */
     public function getValue(Issue $issue) : string
     {
-        return $issue->fields->reporter->name;
+        return $issue->key;
     }
 }

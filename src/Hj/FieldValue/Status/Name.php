@@ -1,10 +1,11 @@
 <?php
 
-namespace Hj\Field;
+namespace Hj\FieldValue\Status;
 
+use Hj\FieldValue\FieldValue;
 use JiraRestApi\Issue\Issue;
 
-class Summary implements Field
+class Name implements FieldValue
 {
     /**
      * @param Issue $issue
@@ -12,6 +13,6 @@ class Summary implements Field
      */
     public function getValue(Issue $issue) : string
     {
-        return $issue->fields->summary;
+        return $issue->fields->status->name;
     }
 }

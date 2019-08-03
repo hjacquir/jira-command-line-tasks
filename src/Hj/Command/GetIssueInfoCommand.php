@@ -9,10 +9,11 @@ use Box\Spout\Writer\WriterFactory;
 use Hj\Action\ActionCollection;
 use Hj\Action\CollectFieldValue;
 use Hj\Condition\AlwaysTrue;
-use Hj\Field\Key;
-use Hj\Field\Reporter;
-use Hj\Field\Status;
-use Hj\Field\Summary;
+use Hj\FieldValue\Assignee\Name as AssigneeName;
+use Hj\FieldValue\Date\Created\StringValue;
+use Hj\FieldValue\Key;
+use Hj\FieldValue\Status\Name;
+use Hj\FieldValue\Summary;
 use Hj\Jql\Condition;
 use Hj\Jql\Jql;
 use Hj\JqlConfigurator;
@@ -80,11 +81,15 @@ class GetIssueInfoCommand extends Command
         try {
             $sr = new IssueService();
             $condition = new AlwaysTrue();
+            $statusName = new Name();
+            $createdDateString = new StringValue('d/m/Y');
+            $assigneeName = new AssigneeName();
             $action = new CollectFieldValue(
                 [
                     new Key(),
-                    new Reporter(),
-                    new Status(),
+                    $statusName,
+                    $createdDateString,
+                    $assigneeName,
                     new Summary(),
                 ]
             );
