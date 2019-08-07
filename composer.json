@@ -10,8 +10,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Hj\\": "src/HJ/",
-            "Hj\\Tests\\": "tests/HJ/"
+            "Hj\\": "src/Hj/",
+            "Hj\\Tests\\": "tests/Hj/"
         }
     },
     "require-dev": {
