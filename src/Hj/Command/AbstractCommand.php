@@ -13,6 +13,7 @@ use JiraRestApi\Issue\IssueService;
 use JiraRestApi\JiraException;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -29,10 +30,7 @@ abstract class AbstractCommand extends Command
     const KEY_DEFAULT = 'default';
     const ARG_IDS = 'ids';
     const ARG_IDS_DESC = 'Issue Ids (integer list)';
-    /**
-     * @var string
-     */
-    private $yamlFile;
+    const ARG_JQL_PATH = 'jqlPath';
 
     /**
      * @var Logger
@@ -56,14 +54,12 @@ abstract class AbstractCommand extends Command
 
     /**
      * BaseCommand constructor.
-     * @param string $yamlFile
      * @param Logger $logger
      * @param IssueService $service
      */
-    public function __construct(string $yamlFile, Logger $logger, IssueService $service)
+    public function __construct(Logger $logger, IssueService $service)
     {
         parent::__construct();
-        $this->yamlFile = $yamlFile;
         $this->logger = $logger;
         $this->service = $service;
     }
@@ -88,6 +84,11 @@ abstract class AbstractCommand extends Command
     {
         parent::configure();
         $this->setName($this->getCommandName());
+        $this->addArgument(
+            self::ARG_JQL_PATH,
+            InputArgument::REQUIRED,
+            'Jql file path'
+        );
         foreach ($this->getCommandArguments() as $commandArgument) {
             $this->addArgument(
                $commandArgument[self::KEY_NAME],
@@ -125,7 +126,7 @@ abstract class AbstractCommand extends Command
 
             $jql = new Jql($ticketsId);
             $configurator = new JqlConfigurator($jql);
-            $jql = $configurator->configure($this->yamlFile);
+            $jql = $configurator->configure($this->getInput()->getArgument(self::ARG_JQL_PATH));
             $conditionMoveToNextTicket = new JqlCondiftion($contentForConditionMoveToNextTicket);
 
             $jqlLoader = new JqlBasedLoader($this->service, $jql, 100, $conditionMoveToNextTicket);
