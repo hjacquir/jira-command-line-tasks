@@ -10,6 +10,7 @@ use Hj\Command\CommentAssignChangeStatusCommand;
 use Hj\Command\CommentCommand;
 use Hj\Command\GetIssueInfoCommand;
 use Hj\Command\UpdateDueDateCommand;
+use JiraRestApi\Issue\IssueService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Component\Console\Application;
@@ -27,7 +28,7 @@ try {
 }
 
 $application = new Application();
-$application->add(new AssigneeCommand('jqls/assigneeCommand.yaml', $logger));
+$application->add(new AssigneeCommand('jqls/assigneeCommand.yaml', $logger, new IssueService()));
 $application->add(new ChangeAssigneeByReporterCommand('jqls/changeAssigneeByReporterCommand.yaml', $logger));
 $application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChangeStatusCommand.yaml', $logger));
 $application->add(new CommentCommand('jqls/commentCommand.yaml', $logger));

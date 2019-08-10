@@ -3,7 +3,6 @@
 namespace Hj\Command;
 
 use Hj\Action\ActionCollection;
-use Hj\Action\ChangeAssignee;
 use Hj\Action\UpdateDueDate;
 use Hj\Condition\AlwaysTrue;
 use Hj\Jql\Condition;
@@ -15,7 +14,6 @@ use JiraRestApi\Issue\IssueService;
 use JiraRestApi\JiraException;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

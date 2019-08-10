@@ -13,6 +13,6 @@ class Name implements FieldValue
      */
     public function getValue(Issue $issue) : string
     {
-        return $issue->fields->assignee->name;
+        return $issue->fields->assignee->name ?? '';
     }
 }

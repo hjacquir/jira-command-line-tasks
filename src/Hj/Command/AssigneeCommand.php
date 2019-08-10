@@ -5,88 +5,90 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Action\ChangeAssignee;
 use Hj\Condition\AlwaysTrue;
-use Hj\Jql\Condition;
-use Hj\Jql\Jql;
-use Hj\JqlConfigurator;
-use Hj\Loader\JqlBasedLoader;
-use Hj\Processor\Processor;
-use JiraRestApi\Issue\IssueService;
-use JiraRestApi\JiraException;
-use Monolog\Logger;
-use Symfony\Component\Console\Command\Command;
+use Hj\Condition\Condition;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class AssigneeCommand extends Command
+class AssigneeCommand extends BaseCommand
 {
-    /**
-     * @var string
-     */
-    private $yamlFile;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * AssigneeCommand constructor.
-     * @param string $yamlFile
-     * @param Logger $logger
-     */
-    public function __construct($yamlFile, Logger $logger)
+    protected function beforeProcess()
     {
-        parent::__construct();
-        $this->yamlFile = $yamlFile;
-        $this->logger = $logger;
+        // TODO: Implement beforeProcess() method.
     }
 
-
-    protected function configure()
+    protected function afterProcess()
     {
-        $this->setName('assignee:change');
-        $this
-            ->addArgument(
-                'assignee',
-                InputArgument::REQUIRED,
-                'Assignee name (string)'
-            );
-        $this
-            ->addArgument(
-                'ids',
-                InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                'Issue Ids (integer list)'
-            );
+        // TODO: Implement afterProcess() method.
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return array
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function getCommandArguments(): array
     {
-        $ids = $input->getArgument('ids');
-        $assigneeName = $input->getArgument('assignee');
+        return [
+            [
+                'name' => 'assignee',
+                'mode' => InputArgument::REQUIRED,
+                'description' => 'Assignee name (string)',
+            ],
+            [
+                'name' => 'ids',
+                'mode' => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                'description' => 'Issue Ids (integer list)',
+            ],
+        ];
+    }
 
-        try {
-            $sr = new IssueService();
-            $condition = new AlwaysTrue();
-            $action = new ChangeAssignee($sr, $assigneeName, $this->logger);
-            $collection = new ActionCollection();
-            $collection->addAction($action);
+    /**
+     * @return array
+     */
+    protected function getCommandOptions(): array
+    {
+        return [];
+    }
 
-            $jql = new Jql($ids);
-            $configurator = new JqlConfigurator($jql);
-            $jql = $configurator->configure($this->yamlFile);
+    /**
+     * @return Condition
+     */
+    protected function getCondition(): Condition
+    {
+        return new AlwaysTrue();
+    }
 
-            $conditionMoveToNextTicket = new Condition('');
-            $jqlLoader = new JqlBasedLoader($sr, $jql, 100, $conditionMoveToNextTicket);
-            $processor = new Processor($sr, $condition, $collection, $jqlLoader);
-            $processor->process();
-        } catch (JiraException $e) {
-            echo $e->getMessage() . PHP_EOL;
-        }
+    /**
+     * @return ActionCollection
+     */
+    protected function getActionCollection(): ActionCollection
+    {
+        $action = new ChangeAssignee($this->getService(), $this->getInput()->getArgument('assignee'), $this->getLogger());
+        $collection = new ActionCollection();
+        $collection->addAction($action);
+
+        return $collection;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getTicketsIds(): array
+    {
+        return $this->getInput()->getArgument('ids');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getContentForConditionToMoveToNextTicket(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCommandName(): string
+    {
+        return 'change:assignee';
     }
 }
