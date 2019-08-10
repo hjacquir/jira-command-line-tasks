@@ -5,7 +5,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Hj\Command\AssigneeCommand;
 use Hj\Command\CascadeCommand;
-use Hj\Command\CommentAssignChangeStatusCommand;
 use Hj\Command\CommentCommand;
 use Hj\Command\GetIssueInfoCommand;
 use Hj\Command\UpdateDueDateCommand;
@@ -30,7 +29,6 @@ try {
 $application = new Application();
 $service = new IssueService();
 $application->add(new AssigneeCommand($logger, $service));
-$application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChangeStatusCommand.yaml', $logger));
 $application->add(new CommentCommand($logger, $service));
 $application->add(new GetIssueInfoCommand( $logger, $service));
 $application->add(new UpdateDueDateCommand($logger, $service));
