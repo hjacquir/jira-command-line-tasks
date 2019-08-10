@@ -5,11 +5,11 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Hj\Command\AssigneeCommand;
 use Hj\Command\CascadeCommand;
-use Hj\Command\ChangeAssigneeByReporterCommand;
 use Hj\Command\CommentAssignChangeStatusCommand;
 use Hj\Command\CommentCommand;
 use Hj\Command\GetIssueInfoCommand;
 use Hj\Command\UpdateDueDateCommand;
+use Hj\Command\UpdateStatusCommand;
 use JiraRestApi\Issue\IssueService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -30,11 +30,11 @@ try {
 $application = new Application();
 $service = new IssueService();
 $application->add(new AssigneeCommand($logger, $service));
-$application->add(new ChangeAssigneeByReporterCommand('jqls/changeAssigneeByReporterCommand.yaml', $logger));
 $application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChangeStatusCommand.yaml', $logger));
 $application->add(new CommentCommand($logger, $service));
 $application->add(new GetIssueInfoCommand( $logger, $service));
 $application->add(new UpdateDueDateCommand($logger, $service));
+$application->add(new UpdateStatusCommand($logger, $service));
 $application->add(new CascadeCommand());
 
 try {
