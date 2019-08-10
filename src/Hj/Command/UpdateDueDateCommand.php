@@ -59,14 +59,6 @@ class UpdateDueDateCommand extends AbstractCommand
     }
 
     /**
-     * @return array
-     */
-    protected function getTicketsIds(): array
-    {
-        return [];
-    }
-
-    /**
      * @return string
      */
     protected function getContentForConditionToMoveToNextTicket(): string

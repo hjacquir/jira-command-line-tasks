@@ -29,7 +29,7 @@ abstract class AbstractCommand extends Command
     const KEY_SHORT = 'shortcut';
     const KEY_DEFAULT = 'default';
     const ARG_IDS = 'ids';
-    const ARG_IDS_DESC = 'Issue Ids (integer list)';
+    const ARG_IDS_DESC = 'Issue Ids (integer list separated by comma. E.g : 12,34)';
     const ARG_JQL_PATH = 'jqlPath';
 
     /**
@@ -119,7 +119,7 @@ abstract class AbstractCommand extends Command
         $this->output = $output;
 
         try {
-            $ticketsId = $this->getTicketsIds();
+            $ticketsId = $this->getIssueIdsAsString();
             $contentForConditionMoveToNextTicket = $this->getContentForConditionToMoveToNextTicket();
             $condition = $this->getCondition();
             $collectionAction = $this->getActionCollection();
@@ -181,11 +181,6 @@ abstract class AbstractCommand extends Command
     protected abstract function getActionCollection() : ActionCollection;
 
     /**
-     * @return array
-     */
-    protected abstract function getTicketsIds() : array;
-
-    /**
      * @return string
      */
     protected abstract function getContentForConditionToMoveToNextTicket() : string;
@@ -213,5 +208,13 @@ abstract class AbstractCommand extends Command
     private function getValueDefaultNull(array $values, string $name)
     {
         return $values[$name] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    private function getIssueIdsAsString(): string
+    {
+        return $this->getInput()->getArgument('ids') ?? '';
     }
 }

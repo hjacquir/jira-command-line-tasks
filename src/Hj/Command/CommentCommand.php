@@ -82,13 +82,6 @@ class CommentCommand extends AbstractCommand
 
         return $collection;
     }
-    /**
-     * @return array
-     */
-    protected function getTicketsIds(): array
-    {
-        return $this->getInput()->getArgument(self::ARG_IDS);
-    }
 
     /**
      * @return string

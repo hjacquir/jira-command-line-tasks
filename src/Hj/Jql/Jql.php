@@ -21,24 +21,16 @@ class Jql
     private $expressions = [];
 
     /**
-     * @var array
+     * @var string
      */
-    private $ticketsId;
+    private $issueIdsAsString;
 
     /**
-     * @param $ticketsId
+     * @param string $issueIdsAsString
      */
-    public function __construct($ticketsId)
+    public function __construct(string $issueIdsAsString)
     {
-        $this->ticketsId = $ticketsId;
-    }
-
-    /**
-     * @return Project
-     */
-    public function getProject()
-    {
-        return $this->project;
+        $this->issueIdsAsString = $issueIdsAsString;
     }
 
     /**
@@ -47,54 +39,6 @@ class Jql
     public function setProject($project)
     {
         $this->project = $project;
-    }
-
-    /**
-     * @return Condition[]
-     */
-    public function getConditions()
-    {
-        return $this->conditions;
-    }
-
-    /**
-     * @param Condition[] $conditions
-     */
-    public function setConditions($conditions)
-    {
-        $this->conditions = $conditions;
-    }
-
-    /**
-     * @return Expression[]
-     */
-    public function getExpressions()
-    {
-        return $this->expressions;
-    }
-
-    /**
-     * @param Expression[] $expressions
-     */
-    public function setExpressions($expressions)
-    {
-        $this->expressions = $expressions;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTicketsId()
-    {
-        return $this->ticketsId;
-    }
-
-    /**
-     * @param array $ticketsId
-     */
-    public function setTicketsId($ticketsId)
-    {
-        $this->ticketsId = $ticketsId;
     }
 
     public function addConditions(Condition $condition)
@@ -111,15 +55,6 @@ class Jql
         }
     }
 
-    public function removeCondition(Condition $condition)
-    {
-        $key = array_search($condition, $this->conditions);
-
-        if (false !== $key) {
-            array_splice($this->conditions, $key, 1);
-        }
-    }
-
     public function __toString()
     {
         $string = 'project ' . $this->project->getOperator() . ' "' . $this->project->getName() . '"';
@@ -127,10 +62,11 @@ class Jql
         foreach ($this->conditions as $condition) {
             $string = $string . ' ' . $condition->getContent();
         }
-        if (!empty($this->ticketsId)) {
+        if (!empty($this->issueIdsAsString)) {
             $string = $string . ' AND issueKey in (';
             $issueKey = '';
-            foreach ($this->ticketsId as $range) {
+            $issueIdsAsArray = $this->issueIdsToArray($this->issueIdsAsString, ',');
+            foreach ($issueIdsAsArray as $range) {
                 $issueKey = $issueKey . $this->project->getIssueSuffix() . '-' . $range . ',';
             }
             // on supprime la dernière virgule
@@ -147,5 +83,8 @@ class Jql
         return $string;
     }
 
-
+    public function issueIdsToArray(string $issuesIdsAsString, $delimiter)
+    {
+        return explode($delimiter, $issuesIdsAsString);
+    }
 }

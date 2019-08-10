@@ -14,6 +14,7 @@ class CascadeCommand extends Command
     protected function configure()
     {
         $this->setName('cascade:command');
+        $this->addUsage('php console.php cascade:command assignee:update --p=jqls/assignee.yaml --n=jqlPath --p=admin --n=assignee --p=3 --n=ids --i=3  comment:add --p=jqls/comment.yaml --n=jqlPath --p=comment.php --n=commentFilePath --p=3  --n=ids --i=3 issue:update-status --p=jqls/status.yaml --n=jqlPath --p=Escalated --n=status --p=3 --n=ids --i=3');
 
         $this
             ->addArgument(

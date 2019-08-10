@@ -34,7 +34,7 @@ class AssigneeCommand extends AbstractCommand
             ],
             [
                 self::KEY_NAME => self::ARG_IDS,
-                self::KEY_MODE => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                self::KEY_MODE => InputArgument::OPTIONAL,
                 self::KEY_DESC => self::ARG_IDS_DESC,
             ],
         ];
@@ -66,14 +66,6 @@ class AssigneeCommand extends AbstractCommand
         $collection->addAction($action);
 
         return $collection;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getTicketsIds(): array
-    {
-        return $this->getInput()->getArgument('ids');
     }
 
     /**
