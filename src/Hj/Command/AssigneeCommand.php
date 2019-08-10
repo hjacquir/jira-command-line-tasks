@@ -89,6 +89,6 @@ class AssigneeCommand extends BaseCommand
      */
     protected function getCommandName(): string
     {
-        return 'change:assignee';
+        return 'assignee:update';
     }
 }
