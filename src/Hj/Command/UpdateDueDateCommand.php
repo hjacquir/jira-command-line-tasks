@@ -5,78 +5,80 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Action\UpdateDueDate;
 use Hj\Condition\AlwaysTrue;
-use Hj\Jql\Condition;
-use Hj\Jql\Jql;
-use Hj\JqlConfigurator;
-use Hj\Loader\JqlBasedLoader;
-use Hj\Processor\Processor;
-use JiraRestApi\Issue\IssueService;
-use JiraRestApi\JiraException;
-use Monolog\Logger;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateDueDateCommand extends Command
+class UpdateDueDateCommand extends AbstractCommand
 {
-    /**
-     * @var string
-     */
-    private $yamlFile;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * AssigneeCommand constructor.
-     * @param string $yamlFile
-     * @param Logger $logger
-     */
-    public function __construct($yamlFile, Logger $logger)
+    protected function beforeProcess()
     {
-        parent::__construct();
-        $this->yamlFile = $yamlFile;
-        $this->logger = $logger;
+        // TODO: Implement beforeProcess() method.
     }
 
-
-    protected function configure()
+    protected function afterProcess()
     {
-        $this->setName('issue:update-due-date');
+        // TODO: Implement afterProcess() method.
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return array
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function getCommandArguments(): array
     {
-        try {
-            $sr = new IssueService();
-            $condition = new AlwaysTrue();
-            // date format = 'YYYY-mm-dd'
-            $mappingDueDate = [
-'issueKey1' => 'dueDate1',
-'issueKey2' => 'dueDate2',
-'issueKey3' => 'dueDate3',
-            ];
-            $action = new UpdateDueDate($sr, $mappingDueDate, $this->logger);
-            $collection = new ActionCollection();
-            $collection->addAction($action);
+        return [];
+    }
 
-            $jql = new Jql([]);
-            $configurator = new JqlConfigurator($jql);
-            $jql = $configurator->configure($this->yamlFile);
+    /**
+     * @return array
+     */
+    protected function getCommandOptions(): array
+    {
+        return [];
+    }
 
-            $conditionMoveToNextTicket = new Condition('');
-            $jqlLoader = new JqlBasedLoader($sr, $jql, 100, $conditionMoveToNextTicket);
-            $processor = new Processor($sr, $condition, $collection, $jqlLoader);
-            $processor->process();
-        } catch (JiraException $e) {
-            echo $e->getMessage() . PHP_EOL;
-        }
+    /**
+     * @return \Hj\Condition\Condition
+     */
+    protected function getCondition(): \Hj\Condition\Condition
+    {
+        return new AlwaysTrue();
+    }
+
+    /**
+     * @return ActionCollection
+     */
+    protected function getActionCollection(): ActionCollection
+    {
+        // date format = 'YYYY-mm-dd'
+        $mappingDueDate = [
+            'PPDC-3' => '2019-12-12',
+        ];
+        $action = new UpdateDueDate($this->getService(), $mappingDueDate, $this->getLogger());
+        $collection = new ActionCollection();
+        $collection->addAction($action);
+
+        return $collection;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getTicketsIds(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getContentForConditionToMoveToNextTicket(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCommandName(): string
+    {
+        return 'issue:update-due-date';
     }
 }

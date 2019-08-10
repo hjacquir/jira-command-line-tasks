@@ -34,7 +34,7 @@ $application->add(new ChangeAssigneeByReporterCommand('jqls/changeAssigneeByRepo
 $application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChangeStatusCommand.yaml', $logger));
 $application->add(new CommentCommand('jqls/commentCommand.yaml', $logger, $service));
 $application->add(new GetIssueInfoCommand('jqls/getIssueInfoCommand.yaml', $logger, $service));
-$application->add(new UpdateDueDateCommand('jqls/updateDueDateCommand.yaml', $logger));
+$application->add(new UpdateDueDateCommand('jqls/updateDueDateCommand.yaml', $logger, $service));
 $application->add(new CascadeCommand());
 
 try {
