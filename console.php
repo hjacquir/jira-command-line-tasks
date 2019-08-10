@@ -28,10 +28,11 @@ try {
 }
 
 $application = new Application();
-$application->add(new AssigneeCommand('jqls/assigneeCommand.yaml', $logger, new IssueService()));
+$service = new IssueService();
+$application->add(new AssigneeCommand('jqls/assigneeCommand.yaml', $logger, $service));
 $application->add(new ChangeAssigneeByReporterCommand('jqls/changeAssigneeByReporterCommand.yaml', $logger));
 $application->add(new CommentAssignChangeStatusCommand('jqls/commentAssignChangeStatusCommand.yaml', $logger));
-$application->add(new CommentCommand('jqls/commentCommand.yaml', $logger));
+$application->add(new CommentCommand('jqls/commentCommand.yaml', $logger, $service));
 $application->add(new GetIssueInfoCommand('jqls/getIssueInfoCommand.yaml', $logger));
 $application->add(new UpdateDueDateCommand('jqls/updateDueDateCommand.yaml', $logger));
 $application->add(new CascadeCommand());

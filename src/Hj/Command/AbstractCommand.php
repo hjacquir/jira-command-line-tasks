@@ -20,8 +20,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class BaseCommand
  * @package Hj\Command
  */
-abstract class BaseCommand extends Command
+abstract class AbstractCommand extends Command
 {
+    const KEY_NAME = 'name';
+    const KEY_MODE = 'mode';
+    const KEY_DESC = 'description';
+    const KEY_SHORT = 'shortcut';
+    const KEY_DEFAULT = 'default';
+
     /**
      * @var string
      */
@@ -83,19 +89,19 @@ abstract class BaseCommand extends Command
         $this->setName($this->getCommandName());
         foreach ($this->getCommandArguments() as $commandArgument) {
             $this->addArgument(
-               $commandArgument['name'],
-               $this->getValueDefaultNull($commandArgument, 'mode'),
-               $this->getValueDefaultEmptyString($commandArgument, 'description'),
-               $this->getValueDefaultNull($commandArgument, 'default')
+               $commandArgument[self::KEY_NAME],
+               $this->getValueDefaultNull($commandArgument, self::KEY_MODE),
+               $this->getValueDefaultEmptyString($commandArgument, self::KEY_DESC),
+               $this->getValueDefaultNull($commandArgument, self::KEY_DEFAULT)
             );
         }
         foreach ($this->getCommandOptions() as $commandOption) {
             $this->addOption(
-                $commandOption['name'],
-                $this->getValueDefaultNull($commandOption, 'shortcut'),
-                $this->getValueDefaultNull($commandOption, 'mode'),
-                $this->getValueDefaultEmptyString($commandOption, 'description'),
-                $this->getValueDefaultNull($commandOption, 'default')
+                $commandOption[self::KEY_NAME],
+                $this->getValueDefaultNull($commandOption, self::KEY_SHORT),
+                $this->getValueDefaultNull($commandOption, self::KEY_MODE),
+                $this->getValueDefaultEmptyString($commandOption, self::KEY_DESC),
+                $this->getValueDefaultNull($commandOption, self::KEY_DEFAULT)
             );
         }
     }

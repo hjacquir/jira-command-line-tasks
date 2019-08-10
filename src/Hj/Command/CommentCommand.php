@@ -5,94 +5,104 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Action\AddComment;
 use Hj\Condition\AlwaysTrue;
+use Hj\Exception\EmptyStringException;
+use Hj\Exception\FileNotFoundException;
 use Hj\Helper\CommentFormatter;
-use Hj\Jql\Condition;
-use Hj\Jql\Jql;
-use Hj\JqlConfigurator;
-use Hj\Loader\JqlBasedLoader;
-use Hj\Processor\Processor;
 use JiraRestApi\Issue\Comment;
-use JiraRestApi\Issue\IssueService;
-use JiraRestApi\JiraException;
-use Monolog\Logger;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class CommentCommand extends Command
+class CommentCommand extends AbstractCommand
 {
-    /**
-     * @var string
-     */
-    private $yamlFile;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    const ARG_COMMENT_FILE_PATH = 'commentFilePath';
+    const ARG_IDS = 'ids';
 
-    /**
-     * CommentCommand constructor.
-     * @param string $yamlFile
-     * @param Logger $logger
-     */
-    public function __construct($yamlFile, Logger $logger)
+    protected function beforeProcess()
     {
-        parent::__construct();
-        $this->yamlFile = $yamlFile;
-        $this->logger = $logger;
+        // TODO: Implement beforeProcess() method.
     }
 
-
-    protected function configure()
+    protected function afterProcess()
     {
-        $this->setName('comment:add');
-        $this
-            ->addArgument(
-                'commentFilePath',
-                InputArgument::REQUIRED,
-                'The path to the php file that load the comment'
-            );
-        $this
-            ->addArgument(
-                'ids',
-                InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                'Issue Ids (integer list)'
-            );
+        // TODO: Implement afterProcess() method.
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @throws \Exception
+     * @return array
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function getCommandArguments(): array
     {
-        $commentFilePath = $input->getArgument('commentFilePath');
-        $ids = $input->getArgument('ids');
+        // TODO: Implement getCommandArguments() method.
+        return [
+            [
+                self::KEY_NAME => self::ARG_COMMENT_FILE_PATH,
+                self::KEY_MODE => InputArgument::REQUIRED,
+                self::KEY_DESC => 'The path to the php file that load the comment',
+            ],
+            [
+                self::KEY_NAME => self::ARG_IDS,
+                self::KEY_MODE => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                self::KEY_DESC => 'Issue Ids (integer list)',
 
-        try {
-            $sr = new IssueService();
-            $condition = new AlwaysTrue();
-            $comment = new Comment();
-            $commentFormatter = new CommentFormatter($commentFilePath);
-            $body = $commentFormatter->getComment();
-            $comment->setBody($body);
-            $action = new AddComment($sr, $comment, $this->logger);
-            $collection = new ActionCollection();
-            $collection->addAction($action);
+            ],
+        ];
+    }
 
-            $jql = new Jql($ids);
-            $configurator = new JqlConfigurator($jql);
-            $jql = $configurator->configure($this->yamlFile);
+    /**
+     * @return array
+     */
+    protected function getCommandOptions(): array
+    {
+        return [];
+    }
 
-            $conditionMoveToNextTicket = new Condition('');
-            $jqlLoader = new JqlBasedLoader($sr, $jql, 100, $conditionMoveToNextTicket);
-            $processor = new Processor($sr, $condition, $collection, $jqlLoader);
-            $processor->process();
-        } catch (JiraException $e) {
-            echo $e->getMessage() . PHP_EOL;
-        }
+    /**
+     * @return \Hj\Condition\Condition
+     */
+    protected function getCondition(): \Hj\Condition\Condition
+    {
+        return new AlwaysTrue();
+    }
+
+    /**
+     * @return ActionCollection
+     * @throws EmptyStringException
+     * @throws FileNotFoundException
+     */
+    protected function getActionCollection(): ActionCollection
+    {
+        $commentFilePath = $this->getInput()->getArgument(self::ARG_COMMENT_FILE_PATH);
+        $comment = new Comment();
+        $commentFormatter = new CommentFormatter($commentFilePath);
+        $body = $commentFormatter->getComment();
+        $comment->setBody($body);
+        $action = new AddComment($this->getService(), $comment, $this->getLogger());
+        $collection = new ActionCollection();
+        $collection->addAction($action);
+
+        return $collection;
+    }
+    /**
+     * @return array
+     */
+    protected function getTicketsIds(): array
+    {
+        return $this->getInput()->getArgument(self::ARG_IDS);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getContentForConditionToMoveToNextTicket(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCommandName(): string
+    {
+        return 'comment:add';
     }
 }

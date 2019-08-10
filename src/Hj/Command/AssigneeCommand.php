@@ -8,7 +8,7 @@ use Hj\Condition\AlwaysTrue;
 use Hj\Condition\Condition;
 use Symfony\Component\Console\Input\InputArgument;
 
-class AssigneeCommand extends BaseCommand
+class AssigneeCommand extends AbstractCommand
 {
 
     protected function beforeProcess()
@@ -28,14 +28,14 @@ class AssigneeCommand extends BaseCommand
     {
         return [
             [
-                'name' => 'assignee',
-                'mode' => InputArgument::REQUIRED,
-                'description' => 'Assignee name (string)',
+                self::KEY_NAME => 'assignee',
+                self::KEY_MODE => InputArgument::REQUIRED,
+                self::KEY_DESC => 'Assignee name (string)',
             ],
             [
-                'name' => 'ids',
-                'mode' => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                'description' => 'Issue Ids (integer list)',
+                self::KEY_NAME => 'ids',
+                self::KEY_MODE => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                self::KEY_DESC => 'Issue Ids (integer list)',
             ],
         ];
     }
