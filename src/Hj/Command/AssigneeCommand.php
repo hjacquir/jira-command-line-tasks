@@ -33,9 +33,9 @@ class AssigneeCommand extends AbstractCommand
                 self::KEY_DESC => 'Assignee name (string)',
             ],
             [
-                self::KEY_NAME => 'ids',
+                self::KEY_NAME => self::ARG_IDS,
                 self::KEY_MODE => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                self::KEY_DESC => 'Issue Ids (integer list)',
+                self::KEY_DESC => self::ARG_IDS_DESC,
             ],
         ];
     }

@@ -27,7 +27,8 @@ abstract class AbstractCommand extends Command
     const KEY_DESC = 'description';
     const KEY_SHORT = 'shortcut';
     const KEY_DEFAULT = 'default';
-
+    const ARG_IDS = 'ids';
+    const ARG_IDS_DESC = 'Issue Ids (integer list)';
     /**
      * @var string
      */
@@ -132,6 +133,7 @@ abstract class AbstractCommand extends Command
             $this->beforeProcess();
             $processor->process();
             $this->afterProcess();
+            $this->getLogger()->info((string) $jql);
         } catch (JiraException $e) {
             echo $e->getMessage() . PHP_EOL;
         }
