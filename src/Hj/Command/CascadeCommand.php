@@ -2,77 +2,85 @@
 
 namespace Hj\Command;
 
+use Hj\Exception\ArrayKeyNotExist;
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class CascadeCommand extends Command
 {
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * CascadeCommand constructor.
+     * @param Logger $logger
+     */
+    public function __construct(Logger $logger)
+    {
+        parent::__construct();
+        $this->logger = $logger;
+    }
+
     protected function configure()
     {
         $this->setName('cascade:command');
-        $this->addUsage('php console.php cascade:command assignee:update --p=jqls/assignee.yaml --n=jqlPath --p=admin --n=assignee --p=3 --n=ids --i=3  comment:add --p=jqls/comment.yaml --n=jqlPath --p=comment.php --n=commentFilePath --p=3  --n=ids --i=3 issue:update-status --p=jqls/status.yaml --n=jqlPath --p=Escalated --n=status --p=3 --n=ids --i=3');
 
         $this
             ->addArgument(
-                'commands',
-                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
-                ''
+                'configFile',
+                InputArgument::REQUIRED,
+                'The yaml config file'
             );
-        $this->addOption(
-            'p',
-            null,
-            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            "Valeur du paramètre de la commande"
-        );
-        $this->addOption(
-            'n',
-            null,
-            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            "Nom du paramètre de la commande"
-        );
-        $this->addOption(
-            'i',
-            null,
-            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            "Nombre d'arguments par commande"
-        );
+    }
 
+    private function getArrayValueFromKey($array, $keyName, $message)
+    {
+        if (!isset($array[$keyName])) {
+            throw new ArrayKeyNotExist($message);
+        }
+
+        return $array[$keyName];
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
+     * @throws \Exception
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $i = 0;
-        $offset = [];
-        $offset[0] = 0;
-        $commands = $input->getArgument('commands');
-        $valeurParametres = $input->getOption('p');
-        $nomParametres = $input->getOption('n');
-        $nombreParametres = $input->getOption('i');
+        $configFile = $input->getArgument('configFile');
+        $value = Yaml::parseFile($configFile);
 
-        foreach ($commands as $key => $command) {
-            $commandeCourante = $this->getApplication()->find($command);
+        try {
+            $commands = $this->getArrayValueFromKey(
+                $value,
+                'commands',
+                "The Yaml config file : '" . $configFile . "' must start with the key : 'commands'. Please configure it correctly."
+            );
+            foreach ($commands as $name => $items) {
+                $arguments = $this->getArrayValueFromKey(
+                    $items,
+                    'arguments',
+                    "The command : '" . $name . "' dont' have the key : 'arguments'. Please define it correctly."
+                    );
+                if (!is_array($arguments)) {
+                    throw new \Exception("The 'arguments' value must be an array. For example : {jqlPath: \"jqls/assignee.yaml\", assignee: \"admin\", ids: \"3\"}");
+                }
+                $currentCommand = $this->getApplication()->find($name);
 
-            $nbreParametreCommandCourante = (int) $nombreParametres[$key] ?? 0;
-
-
-            $parametresCommandeCourante = [];
-
-            while ($i < $nbreParametreCommandCourante + $offset[$key]) {
-                $parametresCommandeCourante[$nomParametres[$i]] = $valeurParametres[$i];
-                $i++;
+                $this->runCommand($currentCommand, $arguments, $output);
             }
-            $offset[$key + 1] = $i;
-
-            $this->runCommand($commandeCourante, $parametresCommandeCourante, $output);
+        } catch (ArrayKeyNotExist $e) {
+            $this->logger->error($e->getMessage());
         }
     }
 

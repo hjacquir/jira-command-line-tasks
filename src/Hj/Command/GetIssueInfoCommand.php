@@ -51,7 +51,7 @@ class GetIssueInfoCommand extends AbstractCommand
         return [
             [
                 self::KEY_NAME => self::ARG_IDS,
-                self::KEY_MODE => InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                self::KEY_MODE => InputArgument::OPTIONAL,
                 self::KEY_DESC => self::ARG_IDS_DESC,
             ]
         ];

@@ -33,7 +33,7 @@ $application->add(new CommentCommand($logger, $service));
 $application->add(new GetIssueInfoCommand( $logger, $service));
 $application->add(new UpdateDueDateCommand($logger, $service));
 $application->add(new UpdateStatusCommand($logger, $service));
-$application->add(new CascadeCommand());
+$application->add(new CascadeCommand($logger));
 
 try {
     $application->run();
