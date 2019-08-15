@@ -4,10 +4,12 @@ namespace Hj\Command;
 
 use Hj\Action\ActionCollection;
 use Hj\Condition\Condition;
+use Hj\File\JqlFile;
 use Hj\Jql\Condition as JqlCondiftion;
 use Hj\Jql\Jql;
-use Hj\JqlConfigurator;
+use Hj\JqlBuilder;
 use Hj\Loader\JqlBasedLoader;
+use Hj\Parser\YamlParser;
 use Hj\Processor\Processor;
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\JiraException;
@@ -123,10 +125,17 @@ abstract class AbstractCommand extends Command
             $contentForConditionMoveToNextTicket = $this->getContentForConditionToMoveToNextTicket();
             $condition = $this->getCondition();
             $collectionAction = $this->getActionCollection();
+            $yamlFilePath = $this->getInput()->getArgument(self::ARG_JQL_PATH);
 
             $jql = new Jql($ticketsId);
-            $configurator = new JqlConfigurator($jql);
-            $jql = $configurator->configure($this->getInput()->getArgument(self::ARG_JQL_PATH));
+            $jqlFile = new JqlFile(
+                new YamlParser(
+                    $yamlFilePath,
+                    new \Hj\Validator\YamlFile\KeyValueValidator\Jql($yamlFilePath)
+                )
+            );
+            $jqlBuilder = new JqlBuilder($jql, $jqlFile);
+            $jql = $jqlBuilder->build();
             $conditionMoveToNextTicket = new JqlCondiftion($contentForConditionMoveToNextTicket);
 
             $jqlLoader = new JqlBasedLoader($this->service, $jql, 100, $conditionMoveToNextTicket);

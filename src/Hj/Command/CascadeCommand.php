@@ -2,14 +2,14 @@
 
 namespace Hj\Command;
 
-use Hj\Exception\ArrayKeyNotExist;
+use Hj\File\CascadeCommandFile;
+use Hj\Parser\YamlParser;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class CascadeCommand extends Command
 {
@@ -40,15 +40,6 @@ class CascadeCommand extends Command
             );
     }
 
-    private function getArrayValueFromKey($array, $keyName, $message)
-    {
-        if (!isset($array[$keyName])) {
-            throw new ArrayKeyNotExist($message);
-        }
-
-        return $array[$keyName];
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -57,33 +48,27 @@ class CascadeCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $configFile = $input->getArgument('configFile');
-        $value = Yaml::parseFile($configFile);
+        $yamlFilePath = $input->getArgument('configFile');
 
-        try {
-            $commands = $this->getArrayValueFromKey(
-                $value,
-                'commands',
-                "The Yaml config file : '" . $configFile . "' must start with the key : 'commands'. Please configure it correctly."
-            );
-            foreach ($commands as $name => $items) {
-                $arguments = $this->getArrayValueFromKey(
-                    $items,
-                    'arguments',
-                    "The command : '" . $name . "' dont' have the key : 'arguments'. Please define it correctly."
-                    );
-                if (!is_array($arguments)) {
-                    throw new \Exception("The 'arguments' value must be an array. For example : {jqlPath: \"jqls/assignee.yaml\", assignee: \"admin\", ids: \"3\"}");
-                }
-                $currentCommand = $this->getApplication()->find($name);
+        $cascadeCommandFile = new CascadeCommandFile(
+            new YamlParser(
+                $yamlFilePath,
+                new \Hj\Validator\YamlFile\KeyValueValidator\CascadeCommand($yamlFilePath)
+            )
+        );
 
-                $this->runCommand($currentCommand, $arguments, $output);
-            }
-        } catch (ArrayKeyNotExist $e) {
-            $this->logger->error($e->getMessage());
+        foreach ($cascadeCommandFile->getCommands() as $index => $command) {
+            $commandName = $cascadeCommandFile->getCommandName($index);
+            $this->runCommand($this->getApplication()->find($commandName), $cascadeCommandFile->getCommandArguments($index), $output);
         }
     }
 
+    /**
+     * @param Command $command
+     * @param $arguments
+     * @param $output
+     * @throws \Exception
+     */
     private function runCommand(Command $command, $arguments, $output)
     {
         $greetInput = new ArrayInput($arguments);

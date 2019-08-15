@@ -1,5 +1,0 @@
-commands:
-    'assignee:update':
-        arguments: {jqlPath: "jqls/assignee.yaml", assignee: "admin"}
-    'comment:add':
-        arguments: {jqlPath: "jqls/comment.yaml", commentFilePath: "comment.php", ids: "3"}
