@@ -13,7 +13,7 @@ use Hj\FieldValue\Date\Created\StringValue;
 use Hj\FieldValue\Key;
 use Hj\FieldValue\Status\Name;
 use Hj\FieldValue\Summary;
-use Hj\Recorder\XlsxRecorder;
+use Hj\XlsxRecorder;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Hj\Recorder;
+namespace Hj;
 
 use Box\Spout\Common\Exception\IOException;
 use Box\Spout\Common\Exception\SpoutException;

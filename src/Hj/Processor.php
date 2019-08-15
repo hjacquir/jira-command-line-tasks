@@ -1,6 +1,6 @@
 <?php
 
-namespace Hj\Processor;
+namespace Hj;
 
 use Hj\Action\ActionCollection;
 use Hj\Condition\Condition;

@@ -10,7 +10,7 @@ use Hj\Jql\Jql;
 use Hj\JqlBuilder;
 use Hj\Loader\JqlBasedLoader;
 use Hj\Parser\YamlParser;
-use Hj\Processor\Processor;
+use Hj\Processor;
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\JiraException;
 use Monolog\Logger;
