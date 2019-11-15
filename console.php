@@ -8,6 +8,7 @@ use Hj\Command\CascadeCommand;
 use Hj\Command\CommentCommand;
 use Hj\Command\GetIssueInfoCommand;
 use Hj\Command\UpdateDueDateCommand;
+use Hj\Command\UpdateRootCauseCommand;
 use Hj\Command\UpdateStatusCommand;
 use JiraRestApi\Issue\IssueService;
 use Monolog\Handler\StreamHandler;
@@ -34,6 +35,7 @@ $application->add(new GetIssueInfoCommand( $logger, $service));
 $application->add(new UpdateDueDateCommand($logger, $service));
 $application->add(new UpdateStatusCommand($logger, $service));
 $application->add(new CascadeCommand($logger));
+$application->add(new UpdateRootCauseCommand($logger, $service));
 
 try {
     $application->run();
