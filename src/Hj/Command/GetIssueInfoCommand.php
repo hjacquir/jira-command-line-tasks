@@ -3,11 +3,12 @@
 namespace Hj\Command;
 
 use Box\Spout\Common\Type;
-use Box\Spout\Reader\ReaderFactory;
-use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Reader\Common\Creator\ReaderFactory;
+use Box\Spout\Writer\Common\Creator\WriterFactory;
 use Hj\Action\ActionCollection;
 use Hj\Action\CollectFieldValue;
 use Hj\Condition\AlwaysTrue;
+use Hj\Condition\Condition;
 use Hj\FieldValue\Assignee\Name as AssigneeName;
 use Hj\FieldValue\Date\Created\StringValue;
 use Hj\FieldValue\Key;
@@ -23,10 +24,7 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class GetIssueInfoCommand extends AbstractCommand
 {
-    /**
-     * @var CollectFieldValue
-     */
-    private $action;
+    private CollectFieldValue $action;
 
     protected function beforeProcess()
     {
@@ -36,16 +34,22 @@ class GetIssueInfoCommand extends AbstractCommand
     protected function afterProcess()
     {
         $issueFields = $this->action->getCollectedValues();
-        $reader = ReaderFactory::create(Type::XLSX);
-        $writer = WriterFactory::create(Type::XLSX);
+        $reader = ReaderFactory::createFromType(Type::XLSX);
+        $writer = WriterFactory::createFromType(Type::XLSX);
         $recorder = new XlsxRecorder($reader, $writer);
-        $recorder->save('xlsx/issues.xlsx', 'xlsx/temp.xlsx', 'Feuil1', $issueFields);
-        $this->getLogger()->info('The data has been saved.');
+
+        $xlsxFileWhereToRecordData = 'xlsx/issues.xlsx';
+
+        $recorder->save(
+            $xlsxFileWhereToRecordData,
+            'xlsx/temp.xlsx',
+            'Feuil1',
+            $issueFields,
+            null
+        );
+        $this->getLogger()->info(sprintf('The data has been saved in the file : %s', $xlsxFileWhereToRecordData));
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandArguments(): array
     {
         return [
@@ -57,25 +61,16 @@ class GetIssueInfoCommand extends AbstractCommand
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandOptions(): array
     {
         return [];
     }
 
-    /**
-     * @return \Hj\Condition\Condition
-     */
-    protected function getCondition(): \Hj\Condition\Condition
+    protected function getCondition(): Condition
     {
         return new AlwaysTrue();
     }
 
-    /**
-     * @return ActionCollection
-     */
     protected function getActionCollection(): ActionCollection
     {
         $statusName = new Name();
@@ -90,23 +85,18 @@ class GetIssueInfoCommand extends AbstractCommand
                 new Summary(),
             ]
         );
+
         $collection = new ActionCollection();
         $collection->addAction($this->action);
 
         return $collection;
     }
 
-    /**
-     * @return string
-     */
     protected function getContentForConditionToMoveToNextTicket(): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
     protected function getCommandName(): string
     {
         return 'issue:get-fields';

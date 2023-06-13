@@ -5,24 +5,19 @@ namespace Hj\Command;
 use Hj\Action\ActionCollection;
 use Hj\Condition\Condition;
 use Hj\File\JqlFile;
-use Hj\Jql\Condition as JqlCondiftion;
+use Hj\Jql\Condition as JqlConditions;
 use Hj\Jql\Jql;
 use Hj\JqlBuilder;
 use Hj\Loader\JqlBasedLoader;
 use Hj\Parser\YamlParser;
 use Hj\Processor;
 use JiraRestApi\Issue\IssueService;
-use JiraRestApi\JiraException;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class BaseCommand
- * @package Hj\Command
- */
 abstract class AbstractCommand extends Command
 {
     const KEY_NAME = 'name';
@@ -34,49 +29,22 @@ abstract class AbstractCommand extends Command
     const ARG_IDS_DESC = 'Issue Ids (integer list separated by comma. E.g : 12,34)';
     const ARG_JQL_PATH = 'jqlPath';
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private InputInterface $input;
 
-    /**
-     * @var IssueService
-     */
-    private $service;
+    private OutputInterface $output;
 
-    /**
-     * @var InputInterface
-     */
-    private $input;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
-     * BaseCommand constructor.
-     * @param Logger $logger
-     * @param IssueService $service
-     */
-    public function __construct(Logger $logger, IssueService $service)
-    {
+    public function __construct(
+        private Logger $logger,
+        private IssueService $service
+    ) {
         parent::__construct();
-        $this->logger = $logger;
-        $this->service = $service;
     }
 
-    /**
-     * @return Logger
-     */
     public function getLogger(): Logger
     {
         return $this->logger;
     }
 
-    /**
-     * @return IssueService
-     */
     public function getService() : IssueService
     {
         return $this->service;
@@ -110,12 +78,7 @@ abstract class AbstractCommand extends Command
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
         $this->output = $output;
@@ -136,7 +99,7 @@ abstract class AbstractCommand extends Command
             );
             $jqlBuilder = new JqlBuilder($jql, $jqlFile);
             $jql = $jqlBuilder->build();
-            $conditionMoveToNextTicket = new JqlCondiftion($contentForConditionMoveToNextTicket);
+            $conditionMoveToNextTicket = new JqlConditions($contentForConditionMoveToNextTicket);
 
             $jqlLoader = new JqlBasedLoader($this->service, $jql, 100, $conditionMoveToNextTicket);
             $processor = new Processor($this->service, $condition, $collectionAction, $jqlLoader);
@@ -144,22 +107,20 @@ abstract class AbstractCommand extends Command
             $processor->process();
             $this->afterProcess();
             $this->getLogger()->info((string) $jql);
-        } catch (JiraException $e) {
+        } catch (\Throwable $e) {
             echo $e->getMessage() . PHP_EOL;
+
+            return Command::FAILURE;
         }
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * @return InputInterface
-     */
     public function getInput(): InputInterface
     {
         return $this->input;
     }
 
-    /**
-     * @return OutputInterface
-     */
     public function getOutput(): OutputInterface
     {
         return $this->output;
@@ -169,59 +130,28 @@ abstract class AbstractCommand extends Command
 
     protected abstract function afterProcess();
 
-    /**
-     * @return array
-     */
     protected abstract function getCommandArguments() : array;
 
-    /**
-     * @return array
-     */
     protected abstract function getCommandOptions() : array;
 
-    /**
-     * @return Condition
-     */
     protected abstract function getCondition() : Condition;
 
-    /**
-     * @return ActionCollection
-     */
     protected abstract function getActionCollection() : ActionCollection;
 
-    /**
-     * @return string
-     */
     protected abstract function getContentForConditionToMoveToNextTicket() : string;
 
-    /**
-     * @return string
-     */
     protected abstract function getCommandName() : string ;
 
-    /**
-     * @param array $values
-     * @param string $name
-     * @return mixed|string
-     */
     private function getValueDefaultEmptyString(array $values, string $name)
     {
         return $values[$name] ?? '';
     }
 
-    /**
-     * @param array $values
-     * @param string $name
-     * @return mixed|null
-     */
-    private function getValueDefaultNull(array $values, string $name)
+    private function getValueDefaultNull(array $values, string $name): mixed
     {
         return $values[$name] ?? null;
     }
 
-    /**
-     * @return string
-     */
     private function getIssueIdsAsString(): string
     {
         return $this->getInput()->getArgument('ids') ?? '';

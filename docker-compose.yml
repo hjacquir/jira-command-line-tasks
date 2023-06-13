@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  web:
+    container_name: app_jira_command_line
+    image: app_jira_command_line
+    volumes:
+      - .:/app
+    build:
+      context: ./docker
+    command: tail -f /dev/null
