@@ -1,17 +1,18 @@
 # jira-command-line-tasks
 
-## Prérequis
+## Prerequisites
 
 - PHP 7.3
-- Extensions à activer (php.ini) : 
+- Extensions (php.ini) : 
 `extension=curl, extension=fileinfo, extension=gd2, extension=mbstring, extension=openssl`
+
 ## Description
-Exécuter des tâches Jira en ligne de commande.
+Run Jira Cloud tasks from the command line.
 
-## Usage
-- Installer toutes les dépendances via Composer :
-`composer install` ou `php composer.php install`
+## Use
+- Install all dependencies via Composer :
+`composer install` or `php composer.php install`.
 
-- Copier coller le fichier `vendor\lesstif\php-jira-rest-client\.env.example` à la racine du projet en le nommant `.env` et en renseignant les bons paramètres. Attention : pour le mot de passe il faut utiliser votre jeton (JIRA API Token).
+- Copy and paste the `vendor\lesstif\php-jira-rest-client\.env.example` file to the root of the project, naming it `.env` and filling in the correct parameters. Warning: for the password you must use your token (JIRA API Token).
 
-- Lancer la commande : `php console.php` pour voir la liste des commandes disponibles
+- Run the command: `php console.php` to see the list of available commands.

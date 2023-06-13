@@ -1,12 +1,12 @@
 {
     "require": {
+        "php": "8.1.*",
         "lesstif/php-jira-rest-client": "^1.35",
         "monolog/monolog": "^1.24",
         "symfony/yaml": "^4.2",
         "symfony/console": "^4.2",
         "box/spout": "^2.7",
-        "parsecsv/php-parsecsv": "^1.1",
-        "phpunit/phpunit": "^7"
+        "parsecsv/php-parsecsv": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -15,6 +15,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^7"
+        "phpunit/phpunit": "^10.2"
     }
 }
