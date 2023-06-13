@@ -1,12 +1,13 @@
 {
     "require": {
         "php": "8.1.*",
-        "lesstif/php-jira-rest-client": "^1.35",
-        "monolog/monolog": "^1.24",
-        "symfony/yaml": "^4.2",
-        "symfony/console": "^4.2",
-        "box/spout": "^2.7",
-        "parsecsv/php-parsecsv": "^1.1"
+        "lesstif/php-jira-rest-client": "^5.0",
+        "monolog/monolog": "^3.0",
+        "symfony/yaml": "^6.0",
+        "symfony/console": "^6.0",
+        "box/spout": "^3.0",
+        "parsecsv/php-parsecsv": "^1.1",
+        "vlucas/phpdotenv": "^5.5"
     },
     "autoload": {
         "psr-4": {

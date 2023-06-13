@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Command;
 
 use Hj\Action\ActionCollection;
@@ -9,14 +11,9 @@ use Hj\Condition\Condition;
 use JiraRestApi\Issue\Transition;
 use Symfony\Component\Console\Input\InputArgument;
 
-/**
- * Class UpdateStatusCommand
- * @package Hj\Command
- */
 class UpdateStatusCommand extends AbstractCommand
 {
-
-    const ARG_NEW_STATUS = 'status';
+    private const ARG_NEW_STATUS = 'status';
 
     protected function beforeProcess()
     {
@@ -28,9 +25,6 @@ class UpdateStatusCommand extends AbstractCommand
         // TODO: Implement afterProcess() method.
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandArguments(): array
     {
         return [
@@ -47,25 +41,16 @@ class UpdateStatusCommand extends AbstractCommand
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandOptions(): array
     {
         return [];
     }
 
-    /**
-     * @return Condition
-     */
     protected function getCondition(): Condition
     {
         return new AlwaysTrue();
     }
 
-    /**
-     * @return ActionCollection
-     */
     protected function getActionCollection(): ActionCollection
     {
         $changeStatusAction = new ChangeIssueStatus($this->getService(), $this->getLogger());
@@ -78,17 +63,11 @@ class UpdateStatusCommand extends AbstractCommand
         return $collection;
     }
 
-    /**
-     * @return string
-     */
     protected function getContentForConditionToMoveToNextTicket(): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
     protected function getCommandName(): string
     {
         return 'issue:update-status';
