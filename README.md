@@ -26,11 +26,11 @@ conditions:
 expressions:
     - 'order by issueKey ASC'
 ```
-* I run the command : `php console.php issue:update-status jqlsLocal/issue-update.yaml "Terminé(e)" 1` 
-to update issue status from : `A faire` to `Terminé(e)` and the output result is : 
+* I run the command : `php console.php issue:update-status jqlsLocal/issue-update.yaml "Done" 1` 
+to update issue status from : `To do` to `Done` and the output result is : 
 ```shell
-$ php console.php issue:update-status jqlsLocal/issue-update.yaml "Terminé(e)" 1
-[2023-06-13 10:42:25] INFO : Le ticket TEST-1 est passé à l'état : Terminé(e)
+$ php console.php issue:update-status jqlsLocal/issue-update.yaml 'Done' 1
+[2023-06-13 10:42:25] The issue : TEST-2 change successfully status to : Done
 [2023-06-13 10:42:25] INFO : project = "TEST"  and issueKey > TEST-1 AND issueKey in (TEST-1) order by issueKey ASC
 ```
 The last line is the JQL formatted output
@@ -41,6 +41,9 @@ The last line is the JQL formatted output
 #### Update status
 #### Add comment
 #### Update assignee
+* Use the user accountId as parameter : `php console.php assignee:update jqlsLocal/assignee-update.yaml "557058:8ab8aa2f-a8b5-4e54-85a1-61d24575e374"  2`
+* In this example, i use the account id : `557058:8ab8aa2f-a8b5-4e54-85a1-61d24575e374` for the issue `2`
+* The account id can be found on the url of the user's profil
 #### Get lists
 Export issues to excel file `xlsx/issues.xlsx`
 

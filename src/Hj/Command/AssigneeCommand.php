@@ -12,6 +12,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class AssigneeCommand extends AbstractCommand
 {
+    private const ACCOUNT_ID = 'accountId';
+
     protected function beforeProcess()
     {
         // TODO: Implement beforeProcess() method.
@@ -26,9 +28,9 @@ class AssigneeCommand extends AbstractCommand
     {
         return [
             [
-                self::KEY_NAME => 'assignee',
+                self::KEY_NAME => self::ACCOUNT_ID,
                 self::KEY_MODE => InputArgument::REQUIRED,
-                self::KEY_DESC => 'Assignee name (string)',
+                self::KEY_DESC => 'Assignee account id (string)',
             ],
             [
                 self::KEY_NAME => self::ARG_IDS,
@@ -52,7 +54,7 @@ class AssigneeCommand extends AbstractCommand
     {
         $action = new ChangeAssignee(
             $this->getService(),
-            $this->getInput()->getArgument('assignee'),
+            $this->getInput()->getArgument(self::ACCOUNT_ID),
             $this->getLogger()
         );
         $collection = new ActionCollection();

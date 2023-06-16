@@ -13,7 +13,7 @@ class ChangeAssignee implements Action
 {
     public function __construct(
         private IssueService $service,
-        private string $assigneeName,
+        private string $accountId,
         private Logger $logger
     ) {
     }
@@ -21,11 +21,11 @@ class ChangeAssignee implements Action
     public function apply(Issue $issue)
     {
         try {
-            $this->service->changeAssignee($issue->key, $this->assigneeName);
+            $this->service->changeAssigneeByAccountId($issue->key, $this->accountId);
             $this->logger->info(
                 sprintf(
                     'Assignment done to :  %s for issue %s',
-                    $this->assigneeName,
+                    $this->accountId,
                     $issue->key
                 )
             );
@@ -33,7 +33,7 @@ class ChangeAssignee implements Action
             $this->logger->error(
                 sprintf(
                     'Assignment fail to :  %s for issue %s. Error message : [%s]',
-                    $this->assigneeName,
+                    $this->accountId,
                     $issue->key,
                     $e->getMessage()
                 )
