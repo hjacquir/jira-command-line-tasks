@@ -27,7 +27,7 @@ class CascadeCommand extends Command
             );
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $yamlFilePath = $input->getArgument('configFile');
 
@@ -46,6 +46,8 @@ class CascadeCommand extends Command
                 $output
             );
         }
+
+        return Command::SUCCESS;
     }
 
     private function runCommand(Command $command, $arguments, $output)

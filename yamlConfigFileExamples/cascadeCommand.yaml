@@ -1,3 +1,3 @@
 commands:
-  - 'assignee:update': {jqlPath: "jqls/assignee.yaml", assignee: "accountId", ids: "3,2"}
-  - 'comment:add': {jqlPath: "jqls/comment.yaml", commentFilePath: "comment.php", ids: "2,3,1"}
+  - 'assignee:update': {jqlPath: "localJqls/issue-update.yaml", accountId: "557058:8ab8aa2f-a8b5-4e54-85a1-61d24575e384", ids: "1,2"}
+  - 'comment:add': {jqlPath: "localJqls/issue-update.yaml", commentFilePath: "localJqls/comment.php", ids: "1,2"}

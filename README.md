@@ -38,14 +38,17 @@ The last line is the JQL formatted output
 ## List of available commands
 
 ### Issue
-#### Update status
-#### Add comment
-#### Update assignee
+###### Update status
+* look example above
+###### Add comment
+* adding a comment to an issue : `php console.php comment:add jqlsLocal/jql.yaml comment.php  2`
+###### Update assignee
 * Use the user accountId as parameter : `php console.php assignee:update jqlsLocal/assignee-update.yaml "557058:8ab8aa2f-a8b5-4e54-85a1-61d24575e374"  2`
 * In this example, i use the account id : `557058:8ab8aa2f-a8b5-4e54-85a1-61d24575e374` for the issue `2`
 * The account id can be found on the url of the user's profil
-#### Get lists
-Export issues to excel file `xlsx/issues.xlsx`
+###### Get lists
+* Export issues to excel file `xlsx/issues.xlsx`
+* Example : `php console.php issue:get-fields jqlsLocal/jql.yaml`
 
 ### Cascade command 
-Allows you to execute a list of commands (look at :  `yamlConfigFileExamples/cascadeCommand.yaml`)
+* Allows you to execute a list of commands (look at :  `yamlConfigFileExamples/cascadeCommand.yaml`)
