@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Action;
 
 use JiraRestApi\Issue\Issue;
@@ -9,45 +11,33 @@ use Monolog\Logger;
 
 class ChangeAssignee implements Action
 {
-    /**
-     * @var IssueService
-     */
-    private $service;
-
-    /**
-     * @var string
-     */
-    private $assigneeName;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * ChangeAssignee constructor.
-     * @param IssueService $service
-     * @param string $assigneeName
-     * @param Logger $logger
-     */
-    public function __construct(IssueService $service, $assigneeName, Logger $logger)
-    {
-        $this->service = $service;
-        $this->assigneeName = $assigneeName;
-        $this->logger = $logger;
+    public function __construct(
+        private IssueService $service,
+        private string $assigneeName,
+        private Logger $logger
+    ) {
     }
 
-
-    /**
-     * @param Issue $issue
-     */
     public function apply(Issue $issue)
     {
         try {
             $this->service->changeAssignee($issue->key, $this->assigneeName);
-            $this->logger->info("Assignation effectuée de " . $this->assigneeName . " au ticket " . $issue->key);
+            $this->logger->info(
+                sprintf(
+                    'Assignment done to :  %s for issue %s',
+                    $this->assigneeName,
+                    $issue->key
+                )
+            );
         } catch (JiraException $e) {
-            $this->logger->error("Assignation impossible de " . $this->assigneeName . " au ticket " . $issue->key . " [{$e->getMessage()}]");
+            $this->logger->error(
+                sprintf(
+                    'Assignment fail to :  %s for issue %s. Error message : [%s]',
+                    $this->assigneeName,
+                    $issue->key,
+                    $e->getMessage()
+                )
+            );
         }
     }
 }

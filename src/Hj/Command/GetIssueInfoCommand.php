@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Command;
 
 use Box\Spout\Common\Type;
@@ -19,8 +21,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Allows to export in an excel file the set of tickets corresponding to the JQL
- * Class GetIssueInfoCommand
- * @package Hj\Command
  */
 class GetIssueInfoCommand extends AbstractCommand
 {

@@ -31,7 +31,7 @@ $application->add(new AssigneeCommand($logger, $service));
 $application->add(new CommentCommand($logger, $service));
 $application->add(new GetIssueInfoCommand( $logger, $service));
 $application->add(new UpdateStatusCommand($logger, $service));
-$application->add(new CascadeCommand($logger));
+$application->add(new CascadeCommand());
 
 try {
     $application->run();

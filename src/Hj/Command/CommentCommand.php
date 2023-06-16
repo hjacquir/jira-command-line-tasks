@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Command;
 
 use Hj\Action\ActionCollection;
 use Hj\Action\AddComment;
 use Hj\Condition\AlwaysTrue;
+use Hj\Condition\Condition;
 use Hj\Exception\EmptyStringException;
 use Hj\Exception\FileNotFoundException;
 use Hj\Helper\CommentFormatter;
@@ -13,9 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class CommentCommand extends AbstractCommand
 {
-
-    const ARG_COMMENT_FILE_PATH = 'commentFilePath';
-    const ARG_IDS = 'ids';
+    private const ARG_COMMENT_FILE_PATH = 'commentFilePath';
 
     protected function beforeProcess()
     {
@@ -27,12 +28,8 @@ class CommentCommand extends AbstractCommand
         // TODO: Implement afterProcess() method.
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandArguments(): array
     {
-        // TODO: Implement getCommandArguments() method.
         return [
             [
                 self::KEY_NAME => self::ARG_COMMENT_FILE_PATH,
@@ -48,27 +45,16 @@ class CommentCommand extends AbstractCommand
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getCommandOptions(): array
     {
         return [];
     }
 
-    /**
-     * @return \Hj\Condition\Condition
-     */
-    protected function getCondition(): \Hj\Condition\Condition
+    protected function getCondition(): Condition
     {
         return new AlwaysTrue();
     }
 
-    /**
-     * @return ActionCollection
-     * @throws EmptyStringException
-     * @throws FileNotFoundException
-     */
     protected function getActionCollection(): ActionCollection
     {
         $commentFilePath = $this->getInput()->getArgument(self::ARG_COMMENT_FILE_PATH);
@@ -83,17 +69,11 @@ class CommentCommand extends AbstractCommand
         return $collection;
     }
 
-    /**
-     * @return string
-     */
     protected function getContentForConditionToMoveToNextTicket(): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
     protected function getCommandName(): string
     {
         return 'comment:add';

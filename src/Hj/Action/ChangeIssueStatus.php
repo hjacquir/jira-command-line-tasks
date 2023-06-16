@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Action;
 
 use JiraRestApi\Issue\Issue;
@@ -10,35 +12,14 @@ use Monolog\Logger;
 
 class ChangeIssueStatus implements Action
 {
-    /**
-     * @var IssueService
-     */
-    private $service;
+    private Transition $transition;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var Transition
-     */
-    private $transition;
-
-    /**
-     * AddComment constructor.
-     * @param IssueService $service
-     * @param Logger $logger
-     */
-    public function __construct(IssueService $service, Logger $logger)
-    {
-        $this->service = $service;
-        $this->logger = $logger;
+    public function __construct(
+        private IssueService $service,
+        private Logger $logger
+    ) {
     }
 
-    /**
-     * @param Transition $transition
-     */
     public function setTransition(Transition $transition)
     {
         $this->transition = $transition;
@@ -48,9 +29,22 @@ class ChangeIssueStatus implements Action
     {
         try {
             $this->service->transition($issue->key, $this->transition);
-            $this->logger->info("Le ticket " . $issue->key . " est passé à l'état : " . $this->transition->transition['name']);
+            $this->logger->info(
+                sprintf(
+                    'The issue : %s change successfully status to : %s',
+                    $issue->key,
+                    $this->transition->transition['name']
+                )
+            );
         } catch (JiraException $e) {
-            $this->logger->error("Impossible de faire la transition au ticket [{$e->getMessage()}]");
+            $this->logger->error(
+                sprintf(
+                    'The transition to %s for the issue %s fail. Error message : [%s]',
+                    $this->transition->transition['name'],
+                    $issue->key,
+                    $e->getMessage()
+                )
+            );
         }
 
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Command;
 
 use Hj\Action\ActionCollection;
@@ -84,13 +86,13 @@ abstract class AbstractCommand extends Command
         $this->output = $output;
 
         try {
-            $ticketsId = $this->getIssueIdsAsString();
+            $issueIdsAsString = $this->getIssueIdsAsString();
             $contentForConditionMoveToNextTicket = $this->getContentForConditionToMoveToNextTicket();
             $condition = $this->getCondition();
             $collectionAction = $this->getActionCollection();
             $yamlFilePath = $this->getInput()->getArgument(self::ARG_JQL_PATH);
 
-            $jql = new Jql($ticketsId);
+            $jql = new Jql($issueIdsAsString);
             $jqlFile = new JqlFile(
                 new YamlParser(
                     $yamlFilePath,
@@ -102,7 +104,7 @@ abstract class AbstractCommand extends Command
             $conditionMoveToNextTicket = new JqlConditions($contentForConditionMoveToNextTicket);
 
             $jqlLoader = new JqlBasedLoader($this->service, $jql, 100, $conditionMoveToNextTicket);
-            $processor = new Processor($this->service, $condition, $collectionAction, $jqlLoader);
+            $processor = new Processor($condition, $collectionAction, $jqlLoader);
             $this->beforeProcess();
             $processor->process();
             $this->afterProcess();

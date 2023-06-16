@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Loader;
 
 use Hj\Jql\Jql;
@@ -9,18 +11,9 @@ interface Loader
 {
     public function load();
 
-    /**
-     * @return int
-     */
-    public function getMaxResults() : int ;
+    public function getMaxResults() : int;
 
-    /**
-     * @param Issue $issue
-     */
     public function moveToNextTicket(Issue $issue);
 
-    /**
-     * @return Jql
-     */
     public function getJql() : Jql;
 }

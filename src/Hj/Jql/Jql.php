@@ -1,42 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Jql;
 
 class Jql
 {
+    private Project $project;
 
-    /**
-     * @var Project
-     */
-    private $project;
+    /** @var Condition[] */
+    private array $conditions = [];
 
-    /**
-     * @var Condition[]
-     */
-    private $conditions = [];
+    /** @var Expression[] */
+    private array $expressions = [];
 
-    /**
-     * @var Expression[]
-     */
-    private $expressions = [];
-
-    /**
-     * @var string
-     */
-    private $issueIdsAsString;
-
-    /**
-     * @param string $issueIdsAsString
-     */
-    public function __construct(string $issueIdsAsString)
+    public function __construct(private string $issueIdsAsString)
     {
-        $this->issueIdsAsString = $issueIdsAsString;
     }
 
-    /**
-     * @param Project $project
-     */
-    public function setProject($project)
+    public function setProject(Project $project)
     {
         $this->project = $project;
     }
@@ -55,7 +37,7 @@ class Jql
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = 'project ' . $this->project->getOperator() . ' "' . $this->project->getName() . '"';
 
@@ -69,9 +51,9 @@ class Jql
             foreach ($issueIdsAsArray as $range) {
                 $issueKey = $issueKey . $this->project->getIssueSuffix() . '-' . $range . ',';
             }
-            // on supprime la dernière virgule
+            // remove the last comma
             $issueKey = substr($issueKey, 0, -1);
-            // on ajoute la parenthèse
+            // add the parenthesis
             $issueKey = $issueKey . ')';
             $string = $string . $issueKey;
         }
@@ -83,7 +65,7 @@ class Jql
         return $string;
     }
 
-    public function issueIdsToArray(string $issuesIdsAsString, $delimiter)
+    public function issueIdsToArray(string $issuesIdsAsString, $delimiter): array
     {
         return explode($delimiter, $issuesIdsAsString);
     }

@@ -1,57 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj;
 
 use Hj\Action\ActionCollection;
 use Hj\Condition\Condition;
 use Hj\Loader\Loader;
-use JiraRestApi\Issue\IssueService;
 
 class Processor
 {
-    /**
-     * @var IssueService
-     */
-    private $service;
-
-    /**
-     * @var Condition
-     */
-    private $condition;
-
-    /**
-     * @var ActionCollection
-     */
-    private $actionCollection;
-
-    /**
-     * @var Loader
-     */
-    private $loader;
-
-    /**
-     * Processor constructor.
-     * @param IssueService $service
-     * @param Condition $condition
-     * @param ActionCollection $actionCollection
-     * @param Loader $loader
-     */
-    public function __construct(IssueService $service, Condition $condition, ActionCollection $actionCollection, Loader $loader)
-    {
-        $this->service = $service;
-        $this->condition = $condition;
-        $this->actionCollection = $actionCollection;
-        $this->loader = $loader;
+    public function __construct(
+        private Condition $condition,
+        private ActionCollection $actionCollection,
+        private Loader $loader
+    ) {
     }
 
-    /**
-     * @param array $issues
-     * @return bool
-     */
     public function stopProcess(array $issues) : bool
     {
-        // si le nombre de ticket dans ce lot est inférieur
-        // au nombre maximum de résultats renvoyés par la requête -> on arrete le traitement
+        // if the number of tickets in this batch is lower
+        // to the maximum number of results returned by the query -> we stop processing
         return count($issues) < $this->loader->getMaxResults();
     }
 
@@ -65,17 +34,17 @@ class Processor
                     $action->apply($issue);
                 }
             }
-            // je vais passer au dernier élément du lot
-            if ($key === count($issues) - 1) {
-                // je sauvegarde la JQL avec le dernier id traité du lot
+            // I will go to the last element of the batch
+            if (count($issues) - 1 === $key) {
+                // I save the JQL with the last processed id of the batch
                 $this->loader->moveToNextTicket($issue);
             }
         }
 
-        // on verifie si on doit continuer
+        // we check if we should continue
         if (false === $this->stopProcess($issues)) {
-            // on passe au lot suivant
-            echo "Je vais passer au lot suivant" . PHP_EOL;
+            // we go to the next batch
+            echo "We go to the next batch " . PHP_EOL;
             $this->process();
         }
     }

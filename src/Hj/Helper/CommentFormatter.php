@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hj\Helper;
 
 use Hj\Exception\EmptyStringException;
@@ -7,30 +9,24 @@ use Hj\Exception\FileNotFoundException;
 
 class CommentFormatter
 {
-    /**
-     * @var string
-     */
-    private $comment;
+    private string $comment = '';
 
-    /**
-     * CommentFormatter constructor.
-     */
-    public function __construct($commentFilePath)
+    public function __construct(private string $commentFilePath)
     {
-        if (!file_exists($commentFilePath)) {
-            throw new FileNotFoundException("The file '" . $commentFilePath . "' does not exist. Please create it and customize your comment.");
+        if (false === file_exists($commentFilePath)) {
+            throw new FileNotFoundException("The file '" . $this->commentFilePath . "' does not exist. Please create it and customize your comment.");
         }
-        $loadedComment = include $commentFilePath;
-        if ($loadedComment == 1 || $loadedComment == '') {
+
+        $loadedComment = include $this->commentFilePath;
+
+        if (1 === $loadedComment || '' === $loadedComment) {
             throw new EmptyStringException("Your comment file must return a string and it must not be empty.");
         }
+
         $this->comment = $loadedComment;
     }
 
-    /**
-     * @return string
-     */
-    public function getComment()
+    public function getComment(): string
     {
         return $this->comment;
     }

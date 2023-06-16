@@ -49,7 +49,7 @@ class XlsxRecorder
                 // ... and copy each row into the new spreadsheet
                 $this->writer->addRow($row);
             }
-            // on sauvegarde le nom original de la feuille
+            // we save the original name of the sheet
             $sheet = $this->writer->getCurrentSheet();
             $sheet->setName($originalSheetName);
         }
