@@ -6,5 +6,5 @@ services:
     volumes:
       - .:/app
     build:
-      context: ./docker
+      context: ./.docker
     command: tail -f /dev/null
