@@ -17,7 +17,7 @@ class Project
     {
         return $this->name;
     }
-
+    //@todo deprecated remove
     public function getOperator(): string
     {
         return $this->operator;

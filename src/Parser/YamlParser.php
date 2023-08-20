@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Parser;
 
+use App\JqlConfiguration;
 use App\Validator\Validator;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlParser implements Parser
@@ -17,9 +19,15 @@ class YamlParser implements Parser
 
     public function parse(): mixed
     {
-        $value = Yaml::parseFile($this->yamlFile);
-        $this->validator->valid($value);
+        $config = Yaml::parseFile($this->yamlFile);
+        $processor = new Processor();
+        $jqlConfiguration = new JqlConfiguration();
 
-        return $value;
+        $processConfiguration = $processor->processConfiguration(
+            $jqlConfiguration,
+            [$config]
+        );
+
+        return $processConfiguration;
     }
 }
